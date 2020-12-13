@@ -45,14 +45,15 @@ app.post("/bookmarks", (req, res) =>{
 app.get("/bookmarks/:id", (req, res) => {
   const idBookmarks = req.params.id;
   connection.query( "SELECT * from bookmark WHERE id=?", [idBookmarks], (err, results) => {
-      if (err) {  
-        console.log(err);
-        res.status(404).json({ error: err.message, sql: err.sql});
-      } else {
-        res.status(200).json(results[0]);
-      }
+    if (err) {
+      return res.sendStatus(500);
     }
-  );
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Bookmark not found" });
+    }
+        res.status(200).json(results[0]);
+  });
 });
 
 module.exports = app;
